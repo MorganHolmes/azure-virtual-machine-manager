@@ -1,6 +1,6 @@
 exports.handler = async(context, event, callback) => {
   const action = event.action;
-  // Azure Authentication to obtain bearer token
+   // Azure Authentication to obtain bearer token
   try{
     const formData = new FormData();
     formData.append("client_id", context.AZURE_CLIENT_ID);
@@ -16,41 +16,25 @@ exports.handler = async(context, event, callback) => {
 
     const res = await fetch(authRequest);
     const resJson = await res.json();
-  
+    const bearerToken = resJson.access_token;
 
-    //console.log(resJson);
-    return callback(null, res);
+      //Request to Logic App
+    try {
+      const logicAppRequest = new Request(context.LOGIC_APP_URL, {
+        method: "PATCH",
+        body: JSON.stringify({action: action}),
+        headers:{"Content-Type": "application/json","Authorization":"Bearer "+ bearerToken},
+      });
+
+      const logicAppRes = await fetch(logicAppRequest);
+      const logicAppResText = await logicAppRes.text();
+      return callback(null,logicAppResText);
 
     } catch (error){
+      return callback (error);
+    }
+
+  } catch (error){
     return callback (error);
-
   }
-  //Request to logic app
-  // try{
-  //   const instance = axios.create({
-  //     baseURL: context.LOGIC_APP_URL,
-  //     headers: {},
-  //   });
-
-  // } catch (error){
-  //   return callback (error);
-
-  // }
-
-
-
-
-
-  // if (action === "start"){
-  //   return callback(null, )
-
-  // } else if (action === "stop"){
-  //   return callback(null,)
-
-  // } else if (action === "status"){
-  //   return callback(null,)
-
-  // } else {
-  //   return callback("Error - Invalid Action")
-  // }
 };
