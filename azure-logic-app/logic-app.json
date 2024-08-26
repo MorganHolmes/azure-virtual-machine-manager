@@ -1,0 +1,96 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Check_Action": {
+                "cases": {
+                    "start": {
+                        "actions": {
+                            "Response": {
+                                "inputs": {
+                                    "body": "Minecraft Server Successfully Started.",
+                                    "statusCode": 200
+                                },
+                                "kind": "Http",
+                                "type": "Response"
+                            }
+                        },
+                        "case": "start"
+                    },
+                    "status": {
+                        "actions": {
+                            "Response_2": {
+                                "inputs": {
+                                    "body": "Server Details",
+                                    "statusCode": 200
+                                },
+                                "kind": "Http",
+                                "type": "Response"
+                            }
+                        },
+                        "case": "status"
+                    },
+                    "stop": {
+                        "actions": {
+                            "Response_1": {
+                                "inputs": {
+                                    "body": "Minecraft Server Successfully Stopped.",
+                                    "statusCode": 200
+                                },
+                                "kind": "Http",
+                                "type": "Response"
+                            }
+                        },
+                        "case": "stop"
+                    }
+                },
+                "default": {
+                    "actions": {
+                        "Response_3": {
+                            "inputs": {
+                                "body": "Missing or invalid action.",
+                                "statusCode": 404
+                            },
+                            "kind": "Http",
+                            "type": "Response"
+                        }
+                    }
+                },
+                "expression": "@triggerBody()?['action']",
+                "runAfter": {},
+                "type": "Switch"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "When_a_HTTP_request_is_received": {
+                "inputs": {
+                    "method": "PATCH",
+                    "schema": {
+                        "properties": {
+                            "action": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "kind": "Http",
+                "operationOptions": "IncludeAuthorizationHeadersInOutputs",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {}
+        }
+    }
+}
