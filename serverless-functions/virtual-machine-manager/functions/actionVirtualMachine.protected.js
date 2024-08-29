@@ -1,6 +1,6 @@
 exports.handler = async(context, event, callback) => {
   const action = event.action;
-   // Azure Authentication to obtain bearer token
+  // Azure Authentication to obtain bearer token
   try{
     const formData = new FormData();
     formData.append("client_id", context.AZURE_CLIENT_ID);
@@ -18,7 +18,7 @@ exports.handler = async(context, event, callback) => {
     const resJson = await res.json();
     const bearerToken = resJson.access_token;
 
-      //Request to Logic App
+    //Request to Logic App
     try {
       const logicAppRequest = new Request(context.LOGIC_APP_URL, {
         method: "PATCH",
